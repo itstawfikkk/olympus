@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Olympus Gaming - خريطة الجزيرة التفاعلية</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #07070a;
+            color: #f0f0f5;
+            overflow-x: hidden;
+        }
+
+        /* شاشة الدخول الأسطورية (Intro Animation) */
+        #epic-intro {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background: radial-gradient(circle, #12121c 0%, #050508 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 1s ease, visibility 1s ease;
+        }
+
+        .intro-content {
+            text-align: center;
+            position: relative;
+            max-width: 900px;
+            width: 100%;
+            padding: 0 20px;
+        }
+
+        .guards-intro-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 120px;
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        .cyber-guard {
+            width: 100px;
+            height: 160px;
+            background: linear-gradient(180deg, #1f1f2e, #0a0a0f);
+            border: 2px solid #00a2ff;
+            border-radius: 50px 50px 15px 15px;
+            position: relative;
+            box-shadow: 0 0 25px rgba(0, 162, 255, 0.4);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-top: 15px;
+            opacity: 0;
+            animation: guardAppear 1.2s ease forwards;
+        }
+
+        .guard-left { transform: translateX(-50px); animation-delay: 0.3s; }
+        .guard-right { transform: translateX(50px); animation-delay: 0.3s; }
+
+        .guard-helmet {
+            width: 40px;
+            height: 40px;
+            border: 2px solid #00a2ff;
+            border-radius: 50% 50% 20% 20%;
+            position: relative;
+            box-shadow: 0 0 10px #00a2ff;
+        }
+        .guard-helmet::after {
+            content: '';
+            position: absolute;
+            top: 12px;
+            left: 8px;
+            right: 8px;
+            height: 4px;
+            background: #00a2ff;
+            box-shadow: 0 0 8px #00a2ff;
+        }
+
+        .guard-cloak-text {
+            margin-top: 25px;
+            font-size: 9px;
+            color: #00a2ff;
+            font-weight: bold;
+            letter-spacing: 2px;
+            text-shadow: 0 0 5px rgba(0, 162, 255, 0.8);
+            writing-mode: vertical-rl;
+            text-orientation: upright;
+        }
+
+        .swords-clash {
+            position: absolute;
+            width: 180px;
+            height: 120px;
+            top: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 5;
+        }
+
+        .intro-sword {
+            position: absolute;
+            width: 4px;
+            height: 140px;
+            background: linear-gradient(to top, #0055ff, #ffffff);
+            box-shadow: 0 0 15px #00a2ff, 0 0 30px #00a2ff;
+            border-radius: 2px;
+        }
+
+        .sword-1 { transform: rotate(35deg); animation: clashLeft 1s ease 0.8s; }
+        .sword-2 { transform: rotate(-35deg); animation: clashRight 1s ease 0.8s; }
+
+        .intro-title {
+            font-size: 3.5rem;
+            color: #fff;
+            letter-spacing: 8px;
+            text-shadow: 0 0 25px rgba(0, 162, 255, 0.8);
+            opacity: 0;
+            animation: fadeInText 1s ease 1s forwards;
+        }
+
+        .intro-subtitle {
+            font-size: 1.2rem;
+            color: #8a8a9e;
+            letter-spacing: 4px;
+            margin-top: 10px;
+            opacity: 0;
+            animation: fadeInText 1s ease 1.3s forwards;
+        }
+
+        /* --- الهيدر --- */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 50px;
+            background: rgba(11, 11, 16, 0.95);
+            border-bottom: 2px solid #00a2ff;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo-text {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #fff;
+            letter-spacing: 2px;
+            cursor: pointer;
+        }
+        .logo-text span { color: #00a2ff; }
+
+        nav ul { list-style: none; display: flex; gap: 30px; }
+        nav ul li a { color: #c0c0d0; text-decoration: none; font-weight: 600; transition: 0.3s; cursor: pointer; }
+        nav ul li a:hover { color: #00a2ff; text-shadow: 0 0 10px rgba(0, 162, 255, 0.6); }
+
+        /* --- الأقسام الرئيسية (Views) --- */
+        .view-section {
+            display: none;
+            padding: 40px 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            min-height: 80vh;
+        }
+        .active-view { display: block; }
+
+        /* خريطة الجزيرة التفاعلية (الصفحة الرئيسية) */
+        .island-hero {
+            text-align: center;
+            padding: 10px 0 20px;
+        }
+        .island-hero h1 { font-size: 2.8rem; color: #fff; margin-bottom: 10px; }
+        .island-hero h1 span { color: #00a2ff; text-shadow: 0 0 20px rgba(0, 162, 255, 0.7); }
+        .island-hero p { color: #9a9ab0; font-size: 1.05rem; }
+
+        /* حاوية صورة الجزيرة مع نقاط التفاعل (Hotspots) */
+        .island-container {
+            position: relative;
+            max-width: 700px;
+            margin: 20px auto;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 0 30px rgba(0, 162, 255, 0.3);
+            border: 2px solid #1a1a2e;
+        }
+
+        .island-container img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        /* نقاط تفاعلية فوق الصورة توجّه الزائر للأقسام عند النقر عليها */
+        .hotspot {
+            position: absolute;
+            background: rgba(0, 162, 255, 0.4);
+            border: 2px solid #00a2ff;
+            border-radius: 50%;
+            width: 45px;
+            height: 45px;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #fff;
+            font-weight: bold;
+            box-shadow: 0 0 15px #00a2ff;
+            animation: pulseHotspot 2s infinite;
+            transition: 0.3s;
+        }
+
+        .hotspot:hover {
+            transform: scale(1.2);
+            background: #00a2ff;
+        }
+
+        /* أماكن تقريبية للنقاط بناءً على أقسام الجزيرة */
+        .hotspot-pc-left { top: 40%; left: 18%; }
+        .hotspot-pc-vip { top: 60%; left: 45%; }
+        .hotspot-ps5 { top: 42%; right: 18%; }
+        .hotspot-drinks { top: 18%; right: 28%; }
+
+        /* أزرار سفلية تحت الصورة كبديل سهل للتنقل */
+        .zones-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .zone-card {
+            background: linear-gradient(135deg, #13131f, #0a0a0f);
+            border: 2px solid #1a1a2e;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .zone-card:hover {
+            border-color: #00a2ff;
+            transform: translateY(-5px);
+            box-shadow: 0 0 20px rgba(0, 162, 255, 0.3);
+        }
+        .zone-card h3 { font-size: 1.2rem; color: #fff; margin-bottom: 8px; }
+        .zone-card p { color: #8a8a9e; font-size: 0.85rem; margin-bottom: 15px; }
+
+        /* --- صفحة تفاصيل الأجهزة الداخلية --- */
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            border-bottom: 1px solid #1f1f2e;
+            padding-bottom: 15px;
+        }
+        .back-btn {
+            background: transparent;
+            color: #00a2ff;
+            border: 1px solid #00a2ff;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .back-btn:hover { background: #00a2ff; color: #fff; }
+
+        .devices-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 20px;
+        }
+
+        .device-box {
+            background: #111118;
+            border-radius: 8px;
+            padding: 20px;
+            border: 1px solid #222233;
+        }
+
+        .device-box h4 { font-size: 1.2rem; color: #fff; margin-bottom: 8px; }
+        .device-specs { font-size: 0.85rem; color: #8888a0; margin-bottom: 15px; }
+        
+        .status-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+        .status-available { background: rgba(0, 255, 128, 0.15); color: #00ff80; border: 1px solid #00ff80; }
+        .status-busy { background: rgba(255, 60, 60, 0.15); color: #ff3c3c; border: 1px solid #ff3c3c; }
+
+        .action-book-btn {
+            margin-top: 15px;
+            width: 100%;
+            background: #00a2ff;
+            color: #fff;
+            border: none;
+            padding: 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .action-book-btn:disabled { background: #333; color: #777; cursor: not-allowed; }
+
+        /* حركات وإيضاحات */
+        @keyframes pulseHotspot {
+            0% { box-shadow: 0 0 0 0 rgba(0, 162, 255, 0.7); }
+            70% { box-shadow: 0 0 0 15px rgba(0, 162, 255, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(0, 162, 255, 0); }
+        }
+        @keyframes guardAppear {
+            0% { opacity: 0; transform: translateY(40px) scale(0.9); }
+            100% { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        @keyframes clashLeft {
+            0% { transform: translateX(-60px) rotate(10deg); opacity: 0; }
+            50% { opacity: 1; }
+            100% { transform: translateX(0) rotate(35deg); opacity: 1; }
+        }
+        @keyframes clashRight {
+            0% { transform: translateX(60px) rotate(-10deg); opacity: 0; }
+            50% { opacity: 1; }
+            100% { transform: translateX(0) rotate(-35deg); opacity: 1; }
+        }
+        @keyframes fadeInText {
+            0% { opacity: 0; transform: translateY(20px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+        .fade-out { opacity: 0; visibility: hidden; }
+    </style>
+</head>
+<body>
+
+    <div id="epic-intro">
+        <div class="intro-content">
+            <div class="guards-intro-container">
+                <div class="cyber-guard guard-left">
+                    <div class="guard-helmet"></div>
+                    <div class="guard-cloak-text">OLYMPUS</div>
+                </div>
+                <div class="swords-clash">
+                    <div class="intro-sword sword-1"></div>
+                    <div class="intro-sword sword-2"></div>
+                </div>
+                <div class="cyber-guard guard-right">
+                    <div class="guard-helmet"></div>
+                    <div class="guard-cloak-text">OLYMPUS</div>
+                </div>
+            </div>
+            <div class="intro-title">OLYMPUS</div>
+            <div class="intro-subtitle">معبد محترفي الألعاب والتجميعات الأسطورية</div>
+        </div>
+    </div>
+
+    <header>
+        <div class="logo-area">
+            <div class="logo-text" onclick="switchView('home')">OLYMPUS <span>GAMING</span></div>
+        </div>
+        <nav>
+            <ul>
+                <li><a onclick="switchView('home')">خريطة الجزيرة</a></li>
+                <li><a onclick="switchView('pc')">أجهزة PC</a></li>
+                <li><a onclick="switchView('pc-vip')">قسم VIP</a></li>
+                <li><a onclick="switchView('ps5')">منصة PS5</a></li>
+                <li><a onclick="switchView('drinks')">المشروبات والبار</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div id="home-view" class="view-section active-view">
+        <div class="island-hero">
+            <h1>خريطة إمبراطورية <span>أوليمبوس</span> الفضائية</h1>
+            <p>انقر مباشرة على أي جزء في الجزيرة بالأسفل للاستكشاف ومعرفة الأجهزة المتاحة وحجزها</p>
+        </div>
+
+        <div class="island-container">
+            <img src="island-map.jpg" alt="Olympus Island Map">
+            
+            <div class="hotspot hotspot-pc-left" onclick="switchView('pc')" title="قسم PC">PC</div>
+            <div class="hotspot hotspot-pc-vip" onclick="switchView('pc-vip')" title="قسم VIP">VIP</div>
+            <div class="hotspot hotspot-ps5" onclick="switchView('ps5')" title="قسم PS5">PS5</div>
+            <div class="hotspot hotspot-drinks" onclick="switchView('drinks')" title="البار والمشروبات">☕</div>
+        </div>
+
+        <div class="zones-grid">
+            <div class="zone-card" onclick="switchView('pc')">
+                <h3>🖥️ محطة PC العادية</h3>
+                <p>أجهزة قوية للألعاب التنافسية</p>
+            </div>
+            <div class="zone-card" onclick="switchView('pc-vip')">
+                <h3>⚡ محطة PC VIP</h3>
+                <p>RTX 4090 وأعلى أداء خرافي</p>
+            </div>
+            <div class="zone-card" onclick="switchView('ps5')">
+                <h3>🎮 منصات PS5</h3>
+                <p>شاشات عملاقة وجلسات استرخاء</p>
+            </div>
+            <div class="zone-card" onclick="switchView('drinks')">
+                <h3>🥤 المشروبات والبار</h3>
+                <p>مشروبات طاقة ومنعشات للأبطال</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="pc-view" class="view-section">
+        <div class="section-header">
+            <h2>محطة أجهزة الـ PC (حالة الأجهزة الحالية)</h2>
+            <button class="back-btn" onclick="switchView('home')">← العودة للخريطة</button>
+        </div>
+        <div class="devices-grid">
+            <div class="device-box">
+                <h4>PC - 01</h4>
+                <div class="device-specs">RTX 3060 | i5 | 16GB</div>
+                <span class="status-badge status-available">متاح الآن</span>
+                <button class="action-book-btn">حجز فوري</button>
+            </div>
+            <div class="device-box">
+                <h4>PC - 02</h4>
+                <div class="device-specs">RTX 3060 | i5 | 16GB</div>
+                <span class="status-badge status-busy">محجوز (شغال)</span>
+                <button class="action-book-btn" disabled>مشغول</button>
+            </div>
+            <div class="device-box">
+                <h4>PC - 03</h4>
+                <div class="device-specs">RTX 3060 | i5 | 16GB</div>
+                <span class="status-badge status-available">متاح الآن</span>
+                <button class="action-book-btn">حجز فوري</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="pc-vip-view" class="view-section">
+        <div class="section-header">
+            <h2>محطة أجهزة الـ VIP (قمة الأداء)</h2>
+            <button class="back-btn" onclick="switchView('home')">← العودة للخريطة</button>
+        </div>
+        <div class="devices-grid">
+            <div class="device-box" style="border-color: #00a2ff;">
+                <h4>VIP - 01</h4>
+                <div class="device-specs">RTX 4090 | i9 14th | 64GB</div>
+                <span class="status-badge status-available">متاح الآن</span>
+                <button class="action-book-btn">حجز VIP</button>
+            </div>
+            <div class="device-box" style="border-color: #00a2ff;">
+                <h4>VIP - 02</h4>
+                <div class="device-specs">RTX 4080 | i7 | 32GB</div>
+                <span class="status-badge status-busy">محجوز (شغال)</span>
+                <button class="action-book-btn" disabled>مشغول</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="ps5-view" class="view-section">
+        <div class="section-header">
+            <h2>منصات الـ PS5</h2>
+            <button class="back-btn" onclick="switchView('home')">← العودة للخريطة</button>
+        </div>
+        <div class="devices-grid">
+            <div class="device-box">
+                <h4>PS5 - Station 1</h4>
+                <div class="device-specs">شاشة 55 إنش 4K + 2يد تحكم</div>
+                <span class="status-badge status-available">متاح الآن</span>
+                <button class="action-book-btn">حجز المنصة</button>
+            </div>
+            <div class="device-box">
+                <h4>PS5 - Station 2</h4>
+                <div class="device-specs">شاشة 55 إنش 4K + 4يد تحكم</div>
+                <span class="status-badge status-available">متاح الآن</span>
+                <button class="action-book-btn">حجز المنصة</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="drinks-view" class="view-section">
+        <div class="section-header">
+            <h2>المشروبات والطاقة 🥤</h2>
+            <button class="back-btn" onclick="switchView('home')">← العودة للخريطة</button>
+        </div>
+        <div class="devices-grid">
+            <div class="device-box">
+                <h4>مشروب طاقة أوليمبوس</h4>
+                <div class="device-specs">لتعزيز التركيز والطاقة</div>
+                <span style="color: #00a2ff; font-weight: bold; font-size: 1.1rem;">2.5 دينار</span>
+                <button class="action-book-btn" style="background: #111; border: 1px solid #00a2ff;">اطلب لمكانك</button>
+            </div>
+            <div class="device-box">
+                <h4>موهيتو أزرق أسطوري</h4>
+                <div class="device-specs">منعش بنكهة التوت والنعناع</div>
+                <span style="color: #00a2ff; font-weight: bold; font-size: 1.1rem;">3.0 دينار</span>
+                <button class="action-book-btn" style="background: #111; border: 1px solid #00a2ff;">اطلب لمكانك</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // إخفاء أنميشن البداية التلقائي بعد 4 ثوانٍ
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                const intro = document.getElementById('epic-intro');
+                intro.classList.add('fade-out');
+            }, 4000);
+        });
+
+        // دالة التنقل بين صفحات الموقع بسلاسة
+        function switchView(viewName) {
+            const views = document.querySelectorAll('.view-section');
+            views.forEach(v => v.classList.remove('active-view'));
+
+            if(viewName === 'home') {
+                document.getElementById('home-view').classList.add('active-view');
+            } else if(viewName === 'pc') {
+                document.getElementById('pc-view').classList.add('active-view');
+            } else if(viewName === 'pc-vip') {
+                document.getElementById('pc-vip-view').classList.add('active-view');
+            } else if(viewName === 'ps5') {
+                document.getElementById('ps5-view').classList.add('active-view');
+            } else if(viewName === 'drinks') {
+                document.getElementById('drinks-view').classList.add('active-view');
+            }
+            window.scrollTo(0, 0);
+        }
+    </script>
+</body>
+</html>

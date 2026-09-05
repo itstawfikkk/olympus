@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Olympos Gaming - أوليمبوس للألعاب</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #0b0b0f;
+            color: #f0f0f5;
+            overflow-x: hidden;
+        }
+
+        /* شاشة البداية (الدخول الملحمي) */
+        #intro-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background: #050508;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            flex-direction: column;
+            animation: fadeOut 1s ease 3s forwards;
+            pointer-events: none;
+        }
+
+        .epic-title {
+            font-size: 3rem;
+            color: #d4af37;
+            text-transform: uppercase;
+            letter-spacing: 5px;
+            text-shadow: 0 0 20px rgba(212, 175, 55, 0.6);
+            animation: pulseGlow 1.5s infinite alternate;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: #a0a0b0;
+            margin-top: 10px;
+            letter-spacing: 2px;
+        }
+
+        /* الهيدر */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 50px;
+            background: rgba(15, 15, 22, 0.9);
+            border-bottom: 2px solid #d4af37;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #d4af37;
+            letter-spacing: 2px;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            gap: 30px;
+        }
+
+        nav ul li a {
+            color: #fff;
+            text-decoration: none;
+            font-weight: 600;
+            transition: 0.3s;
+        }
+
+        nav ul li a:hover {
+            color: #d4af37;
+            text-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
+        }
+
+        /* الواجهة الرئيسية */
+        .hero {
+            height: 85vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            background: linear-gradient(rgba(5, 5, 8, 0.8), rgba(5, 5, 8, 0.9)), url('https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=1920') no-repeat center center/cover;
+            padding: 0 20px;
+        }
+
+        .hero h1 {
+            font-size: 4rem;
+            color: #fff;
+            margin-bottom: 20px;
+            text-shadow: 0 0 30px rgba(212, 175, 55, 0.4);
+        }
+
+        .hero h1 span {
+            color: #d4af37;
+        }
+
+        .hero p {
+            font-size: 1.3rem;
+            color: #a0a0b0;
+            max-width: 600px;
+            margin-bottom: 30px;
+        }
+
+        .btn-epic {
+            background: linear-gradient(45deg, #b8860b, #d4af37);
+            color: #050508;
+            padding: 15px 40px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: 0.3s;
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
+            text-transform: uppercase;
+        }
+
+        .btn-epic:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 25px rgba(212, 175, 55, 0.8);
+        }
+
+        /* الحركات */
+        @keyframes pulseGlow {
+            0% { opacity: 0.6; text-shadow: 0 0 10px rgba(212, 175, 55, 0.4); }
+            100% { opacity: 1; text-shadow: 0 0 30px rgba(212, 175, 55, 0.9); }
+        }
+
+        @keyframes fadeOut {
+            0% { opacity: 1; visibility: visible; }
+            100% { opacity: 0; visibility: hidden; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="intro-screen">
+        <div class="epic-title">OLYMPOS</div>
+        <div class="subtitle">أدخل معبد الألعاب الأسطوري</div>
+    </div>
+
+    <header>
+        <div class="logo">OLYMPOS ⚡</div>
+        <nav>
+            <ul>
+                <li><a href="#">الرئيسية</a></li>
+                <li><a href="#">تجميعات PC</a></li>
+                <li><a href="#">حجز الأجهزة</a></li>
+                <li><a href="#">الصيانة</a></li>
+                <li><a href="#">تواصل معنا</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section class="hero">
+        <h1>معبد <span>أوليمبوس</span> لأقوى تجميعات الألعاب</h1>
+        <p>ارتقِ بأداء لعبك إلى الآلهة. أجهزة احترافية، تجميعات مخصصة، ودعم فني على مدار الساعة.</p>
+        <button class="btn-epic">احجز جلستك الآن</button>
+    </section>
+
+</body>
+</html>
